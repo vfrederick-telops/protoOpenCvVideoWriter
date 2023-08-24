@@ -18,7 +18,7 @@ int main()
 	cout << "Test openCV codecs and some frame sizes" << endl << endl;
 	
 	vector<string> availableCodec = { "DIVX", "XVID", /*"X264",*/ "WMV1", "WMV2", "FMP4",
-				  "mp4v", /*"avc1",*/ "I420", "IYUV", "mpg1", /*"H264"*/ };
+				  "mp4v", /*"avc1",*/ "I420", "IYUV", "mpg1", "H264" };
 
 	vector<cv::Size> availableSizes;
 	
@@ -39,16 +39,24 @@ int main()
 			const char* codec = iterCodec.c_str();
 			int32_t fourCc = cv::VideoWriter::fourcc(codec[0], codec[1], codec[2], codec[3]);
 
-			cv::VideoWriter cvVideoWriter = cv::VideoWriter::VideoWriter();
-			if (cvVideoWriter.open(fileName, fourCc, 20, iterSize, false))
+			try
 			{
-				cout << " \t VideoWriter passed codec: " << iterCodec << endl;
-				cvVideoWriter.release();
+				cv::VideoWriter cvVideoWriter = cv::VideoWriter::VideoWriter();
+				if (cvVideoWriter.open(fileName, fourCc, 20, iterSize, true))
+				{
+					cout << " \t VideoWriter passed codec: " << iterCodec << endl;
+					cvVideoWriter.release();
+				}
+				else
+				{
+					cout << " \t VideoWriter failed codec: " << iterCodec << endl;
+				}
 			}
-			else
+			catch (...)
 			{
-				cout << " \t VideoWriter failed codec: " << iterCodec << endl;
+				
 			}
+			
 		}
 
 		cout << endl;
