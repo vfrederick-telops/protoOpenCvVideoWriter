@@ -2,10 +2,60 @@
 //
 
 #include <iostream>
+#include <vector>
+#include <string>
+
+//#include <opencv2/core.hpp>
+//#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	using namespace std;
+	
+
+	cout << "Test openCV codecs and some frame sizes" << endl << endl;
+	
+	vector<string> availableCodec = { "DIVX", "XVID", /*"X264",*/ "WMV1", "WMV2", "FMP4",
+				  "mp4v", /*"avc1",*/ "I420", "IYUV", "mpg1", /*"H264"*/ };
+
+	vector<cv::Size> availableSizes;
+	
+	cv::Size sizeTypical(640, 480); availableSizes.push_back(sizeTypical);
+
+	cv::Size sizeWide(320, 64); availableSizes.push_back(sizeWide);
+	cv::Size sizeTall(1280, 16); availableSizes.push_back(sizeTall);
+
+
+	string fileName = "D:/test.avi";
+
+	for (auto& iterSize : availableSizes)
+	{ 
+		cout << "Testing image size: " << iterSize.width << "x" << iterSize.height << endl;
+
+		for (auto& iterCodec : availableCodec)
+		{
+			const char* codec = iterCodec.c_str();
+			int32_t fourCc = cv::VideoWriter::fourcc(codec[0], codec[1], codec[2], codec[3]);
+
+			cv::VideoWriter cvVideoWriter = cv::VideoWriter::VideoWriter();
+			if (cvVideoWriter.open(fileName, fourCc, 20, iterSize, false))
+			{
+				cout << " \t VideoWriter passed codec: " << iterCodec << endl;
+				cvVideoWriter.release();
+			}
+			else
+			{
+				cout << " \t VideoWriter failed codec: " << iterCodec << endl;
+			}
+		}
+
+		cout << endl;
+
+	}
+
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
